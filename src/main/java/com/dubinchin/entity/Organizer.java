@@ -1,9 +1,11 @@
 package com.dubinchin.entity;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "organizer")
+@Data
 public class Organizer {
     @Id
     private String id;
@@ -15,28 +17,4 @@ public class Organizer {
         unique = true
     )
     private User user;
-
-    public Organizer() {
-    }
-
-    public Organizer(String id, User user) {
-        this.id = id;
-        this.user = user;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public User getUser() {
-        return user;
-    }
-
-    public void setUser(User user) {
-        this.user = user;
-    }
 }

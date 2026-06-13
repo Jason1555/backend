@@ -21,7 +21,7 @@ public class ClubMapper {
             .phone(club.getPhone())
             .email(club.getEmail())
             .website(club.getWebsite())
-            .vkLink(club.getVklink())
+            .vkLink(club.getVkLink())
             .userId(club.getOwner().getId())
             .build();
     }
@@ -52,7 +52,7 @@ public class ClubMapper {
         }
 
         if (request.getVkLink() != null) {
-            club.setVklink(request.getVkLink());
+            club.setVkLink(request.getVkLink());
         }
     }
 }

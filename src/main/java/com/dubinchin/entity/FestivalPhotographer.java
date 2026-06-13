@@ -3,9 +3,11 @@ package com.dubinchin.entity;
 import com.dubinchin.entity.enums.PhotographerStatus;
 
 import jakarta.persistence.*;
+import lombok.Data;
 
 @Entity
 @Table(name = "festival_photographer")
+@Data
 public class FestivalPhotographer {
 
     @Id
@@ -28,46 +30,4 @@ public class FestivalPhotographer {
             nullable = false
     )
     private Photographer photographer;
-
-    public FestivalPhotographer() {
-    }
-
-    public FestivalPhotographer(String id, PhotographerStatus status, Festival festival, Photographer photographer) {
-        this.id = id;
-        this.status = status;
-        this.festival = festival;
-        this.photographer = photographer;
-    }
-
-    public String getId() {
-        return id;
-    }
-
-    public void setId(String id) {
-        this.id = id;
-    }
-
-    public PhotographerStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(PhotographerStatus status) {
-        this.status = status;
-    }
-
-    public Festival getFestival() {
-        return festival;
-    }
-
-    public void setFestival(Festival festival) {
-        this.festival = festival;
-    }
-
-    public Photographer getPhotographer() {
-        return photographer;
-    }
-
-    public void setPhotographer(Photographer photographer) {
-        this.photographer = photographer;
-    }
 }

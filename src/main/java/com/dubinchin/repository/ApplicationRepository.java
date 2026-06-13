@@ -14,4 +14,5 @@ public interface ApplicationRepository extends JpaRepository<Application, String
     List<Application> findByStatus(ApplicationStatus status);
     List<Application> findByFestivalAndStatus(String festivalId, ApplicationStatus status);
     List<Application> findByFestivalAndClub(String festivalId, String clubId);
+    boolean existsByFestivalIdAndClubId(String festivalId, String clubId);
 }

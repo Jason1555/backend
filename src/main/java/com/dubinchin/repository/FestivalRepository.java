@@ -12,4 +12,6 @@ public interface FestivalRepository extends JpaRepository<Festival, String>{
     List<Festival> findByStatus(FestivalStatus status);
     List<Festival> findByOrganizerId(String organizerId);
     List<Festival> findByNameContainingIgnoreCase(String name);
+    List<Festival> findByEpoch(String epoch);
+    List<Festival> findByEpochAndStatus(String epoch,FestivalStatus status);
 }
