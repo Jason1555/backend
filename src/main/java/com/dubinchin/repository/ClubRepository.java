@@ -8,5 +8,5 @@ import com.dubinchin.entity.Club;
 
 public interface ClubRepository extends JpaRepository<Club, String>{
     Optional<Club> findByUserId(String userId);
-    boolean exiexistsByUserId(String userId);
+    boolean existsByUserId(String userId);
 }
