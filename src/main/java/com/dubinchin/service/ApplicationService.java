@@ -36,19 +36,93 @@ public class ApplicationService {
     private final ApplicationMapper applicationMapper;
 
     @Transactional(readOnly = true)
-    public List<ApplicationDto> getApplications(String festivalId, String clubId, ApplicationStatus status) {
+    public List<ApplicationDto> getApplications(
+            String userId,
+            String festivalId,
+            String clubId,
+            ApplicationStatus status) {
+        
+        User user = userRepository.findById(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("User with ID: " + userId + " not found"));
+
         List<Application> applications;
-        if (festivalId != null) {
-            applications = applicationRepository.findByFestivalId(festivalId);
-        } else if (clubId != null) {
-            applications = applicationRepository.findByClubId(clubId);
-        } else if (status != null) {
-            applications = applicationRepository.findByStatus(status);
+
+        if (user.getRole() == UserRole.ORGANIZER) {
+            applications = getOrganizerApplications(userId, festivalId, clubId, status);
+        } else if (user.getRole() == UserRole.CLUB) {
+            applications = getClubApplications(userId, clubId, status);
         } else {
-            applications = applicationRepository.findAll();
+            throw new UnauthorizedAccessException("Unknown user role: " + user.getRole());
         }
 
         return applications.stream().map(applicationMapper::toDto).toList();
+    }
+
+    private List<Application> getOrganizerApplications(
+            String organizerId,
+            String festivalId,
+            String clubId,
+            ApplicationStatus status) {
+        
+        List<Application> applications;
+
+        if (festivalId != null) {
+            // Проверяем, что фестиваль принадлежит этому организатору
+            Festival festival = festivalRepository.findById(festivalId)
+                .orElseThrow(() -> new ResourceNotFoundException("Festival with ID: " + festivalId + " not found"));
+            
+            if (!festival.getOrganizer().getUser().getId().equals(organizerId)) {
+                throw new UnauthorizedAccessException(
+                    "You don't have access to applications for festival ID: " + festivalId);
+            }
+
+            if (status != null) {
+                applications = applicationRepository.findByFestivalIdAndStatus(festivalId, status);
+            } else {
+                applications = applicationRepository.findByFestivalId(festivalId);
+            }
+        } else if (clubId != null) {
+            // Организатор может фильтровать по клубу, но видит только заявки своих фестивалей
+            List<Application> allByClub = applicationRepository.findByClubId(clubId);
+            applications = allByClub.stream()
+                .filter(app -> app.getFestival().getOrganizer().getUser().getId().equals(organizerId))
+                .toList();
+        } else if (status != null) {
+            // Показываем все заявки статуса, но только своих фестивалей
+            applications = applicationRepository.findByOrganizerIdAndStatus(organizerId, status);
+        } else {
+            // Показываем все заявки своих фестивалей
+            applications = applicationRepository.findByOrganizerIdAllApplications(organizerId);
+        }
+
+        return applications;
+    }
+
+    private List<Application> getClubApplications(
+            String clubUserId,
+            String clubId,
+            ApplicationStatus status) {
+        
+        Club club = clubRepository.findByUserId(clubUserId)
+            .orElseThrow(() -> new ResourceNotFoundException("Club for user ID: " + clubUserId + " not found"));
+
+        // Если указан clubId, проверяем, что это клуб пользователя
+        if (clubId != null && !clubId.equals(club.getId())) {
+            throw new UnauthorizedAccessException("You don't have access to club ID: " + clubId);
+        }
+
+        List<Application> applications;
+
+        if (status != null) {
+            applications = applicationRepository.findByClubId(club.getId())
+                .stream()
+                .filter(app -> app.getStatus() == status)
+                .toList();
+        } else {
+            applications = applicationRepository.findByClubId(club.getId());
+        }
+
+        return applications;
     }
 
     @Transactional(readOnly = true)

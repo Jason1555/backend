@@ -1,16 +1,13 @@
 package com.dubinchin.controller.impl;
 
 import java.util.List;
-
 import org.springframework.web.bind.annotation.RestController;
-
 import com.dubinchin.controller.ApplicationController;
 import com.dubinchin.dto.ApplicationDto;
 import com.dubinchin.dto.CreateApplicationRequest;
 import com.dubinchin.dto.UpdateApplicationStatusRequest;
 import com.dubinchin.entity.enums.ApplicationStatus;
 import com.dubinchin.service.ApplicationService;
-
 import lombok.RequiredArgsConstructor;
 
 @RestController
@@ -19,8 +16,12 @@ public class ApplicationControllerImpl implements ApplicationController {
     private final ApplicationService applicationService;
 
     @Override
-    public List<ApplicationDto> getApplications(String festivalId, String clubId, ApplicationStatus status) {
-        return applicationService.getApplications(festivalId, clubId, status);
+    public List<ApplicationDto> getApplications(
+            String userId,
+            String festivalId,
+            String clubId,
+            ApplicationStatus status) {
+        return applicationService.getApplications(userId, festivalId, clubId, status);
     }
 
     @Override

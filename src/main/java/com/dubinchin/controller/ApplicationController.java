@@ -26,6 +26,7 @@ public interface ApplicationController {
     @ApiResponse(responseCode = "200", description = "Applications retrieved")
     @GetMapping
     List<ApplicationDto> getApplications(
+        @RequestHeader("X-User-Id") String userId,
         @RequestParam(required = false) String festivalId,
         @RequestParam(required = false) String clubId,
         @RequestParam(required = false) ApplicationStatus status
