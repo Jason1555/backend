@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Клубы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .nav {
+            background-color: #34495e;
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-right: 1px solid #2c3e50;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background-color: #1a252f;
+        }
+
+        .content {
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .content h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            font-weight: normal;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+
+        th {
+            background-color: #ecf0f1;
+            padding: 12px;
+            text-align: left;
+            font-weight: bold;
+            border-bottom: 2px solid #bdc3c7;
+            font-size: 13px;
+        }
+
+        td {
+            padding: 10px 12px;
+            border-bottom: 1px solid #ecf0f1;
+            font-size: 13px;
+        }
+
+        tr:hover {
+            background-color: #f9f9f9;
+        }
+
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .button.secondary {
+            background-color: #95a5a6;
+            padding: 5px 10px;
+            margin: 0;
+            font-size: 12px;
+        }
+
+        .button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid;
+            font-size: 12px;
+        }
+
+        .message.error {
+            background-color: #fadbd8;
+            border-color: #c0392b;
+            color: #c0392b;
+        }
+
+        .message.success {
+            background-color: #d5f4e6;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-field input,
+        .form-field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 12px;
+            border-top: 1px solid #ecf0f1;
+            margin-top: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        .auth-required {
+            background-color: #d6eaf8;
+            border: 1px solid #85c1e2;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Система управления фестивалями</h1>
+            <p>Версия 1.0</p>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="container">
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="auth.html">Вход/Регистрация</a></li>
+                <li><a href="festivals.html">Фестивали</a></li>
+                <li><a href="applications.html">Заявки</a></li>
+                <li><a href="clubs.html" class="active">Клубы</a></li>
+                <li><a href="photographers.html">Фотографы</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h2>Клубы реконструкции</h2>
+
+            <div id="authMessage" class="auth-required" style="display: none;">
+                Пожалуйста, <a href="auth.html">авторизуйтесь</a>
+            </div>
+
+            <div>
+                <button id="editBtn" class="button" onclick="openEditModal()" style="display: none;">Редактировать профиль</button>
+            </div>
+
+            <div id="message"></div>
+
+            <div id="loading" class="loading" style="display: none;">Загрузка...</div>
+
+            <table id="clubsList" style="display: none;">
+                <thead>
+                    <tr>
+                        <th>Название</th>
+                        <th>Email</th>
+                        <th>Телефон</th>
+                        <th>Сайт</th>
+                        <th>Действия</th>
+                    </tr>
+                </thead>
+                <tbody id="clubsBody">
+                </tbody>
+            </table>
+
+            <p id="noData" style="text-align: center; color: #7f8c8d; margin-top: 20px;">Нет данных</p>
+        </div>
+    </div>
+
+    <div id="editModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeEditModal()">&times;</span>
+            <h2>Редактировать клуб</h2>
+            <form id="clubForm" onsubmit="handleUpdateClub(event)">
+                <div class="form-field">
+                    <label for="clubName">Название:</label>
+                    <input type="text" id="clubName" required>
+                </div>
+                <div class="form-field">
+                    <label for="clubEmail">Email:</label>
+                    <input type="email" id="clubEmail" required>
+                </div>
+                <div class="form-field">
+                    <label for="clubPhone">Телефон:</label>
+                    <input type="tel" id="clubPhone">
+                </div>
+                <div class="form-field">
+                    <label for="clubWebsite">Сайт:</label>
+                    <input type="url" id="clubWebsite">
+                </div>
+                <div class="form-field">
+                    <label for="clubVk">ВКонтакте:</label>
+                    <input type="url" id="clubVk">
+                </div>
+                <div class="form-field">
+                    <label for="clubDescription">Описание:</label>
+                    <textarea id="clubDescription"></textarea>
+                </div>
+                <button type="submit" class="button">Сохранить</button>
+                <button type="button" class="button secondary" onclick="closeEditModal()">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 Система управления фестивалями. Все права защищены.</p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let currentClubId = null;
+
+        function checkAuth() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                if (userData.role === 'CLUB') {
+                    document.getElementById('editBtn').style.display = 'inline-block';
+                    document.getElementById('authMessage').style.display = 'none';
+                    loadMyClub();
+                } else {
+                    document.getElementById('editBtn').style.display = 'none';
+                    document.getElementById('authMessage').style.display = 'block';
+                    loadAllClubs();
+                }
+            } else {
+                document.getElementById('editBtn').style.display = 'none';
+                document.getElementById('authMessage').style.display = 'block';
+                loadAllClubs();
+            }
+        }
+
+        async function loadMyClub() {
+            document.getElementById('loading').style.display = 'block';
+            try {
+                const userId = localStorage.getItem('userId');
+                const response = await fetch(`${API_URL}/clubs`);
+                const clubs = await response.json();
+                
+                const myClub = clubs.find(c => c.userId === userId);
+                
+                if (myClub) {
+                    currentClubId = myClub.id;
+                    const tbody = document.getElementById('clubsBody');
+                    tbody.innerHTML = `
+                        <tr>
+                            <td>${myClub.name}</td>
+                            <td>${myClub.email}</td>
+                            <td>${myClub.phone || '-'}</td>
+                            <td>${myClub.website ? '<a href="' + myClub.website + '" target="_blank">Посетить</a>' : '-'}</td>
+                            <td><button class="button secondary" onclick="openEditModal()">Редактировать</button></td>
+                        </tr>
+                    `;
+                    document.getElementById('clubsList').style.display = 'table';
+                    document.getElementById('noData').style.display = 'none';
+                } else {
+                    document.getElementById('clubsList').style.display = 'none';
+                    document.getElementById('noData').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка загрузки</div>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        async function loadAllClubs() {
+            document.getElementById('loading').style.display = 'block';
+            try {
+                const response = await fetch(`${API_URL}/clubs`);
+                const clubs = await response.json();
+                
+                if (!Array.isArray(clubs) || clubs.length === 0) {
+                    document.getElementById('clubsList').style.display = 'none';
+                    document.getElementById('noData').style.display = 'block';
+                } else {
+                    const tbody = document.getElementById('clubsBody');
+                    tbody.innerHTML = '';
+                    
+                    clubs.forEach(club => {
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${club.name}</td>
+                            <td>${club.email}</td>
+                            <td>${club.phone || '-'}</td>
+                            <td>${club.website ? '<a href="' + club.website + '" target="_blank">Посетить</a>' : '-'}</td>
+                            <td>-</td>
+                        `;
+                        tbody.appendChild(row);
+                    });
+                    
+                    document.getElementById('clubsList').style.display = 'table';
+                    document.getElementById('noData').style.display = 'none';
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка загрузки</div>';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        async function openEditModal() {
+            try {
+                const response = await fetch(`${API_URL}/clubs/${currentClubId}`);
+                const club = await response.json();
+                
+                document.getElementById('clubName').value = club.name;
+                document.getElementById('clubEmail').value = club.email;
+                document.getElementById('clubPhone').value = club.phone || '';
+                document.getElementById('clubWebsite').value = club.website || '';
+                document.getElementById('clubVk').value = club.vkLink || '';
+                document.getElementById('clubDescription').value = club.description || '';
+                
+                document.getElementById('editModal').classList.add('active');
+            } catch (error) {
+                alert('Ошибка загрузки');
+            }
+        }
+
+        function closeEditModal() {
+            document.getElementById('editModal').classList.remove('active');
+        }
+
+        async function handleUpdateClub(event) {
+            event.preventDefault();
+            
+            const data = {
+                name: document.getElementById('clubName').value,
+                email: document.getElementById('clubEmail').value,
+                phone: document.getElementById('clubPhone').value,
+                website: document.getElementById('clubWebsite').value,
+                vkLink: document.getElementById('clubVk').value,
+                description: document.getElementById('clubDescription').value
+            };
+
+            try {
+                const response = await fetch(`${API_URL}/clubs/${currentClubId}`, {
+                    method: 'PUT',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(data)
+                });
+
+                if (response.ok) {
+                    closeEditModal();
+                    loadMyClub();
+                    document.getElementById('message').innerHTML = '<div class="message success">Клуб обновлен</div>';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('message').innerHTML = `<div class="message error">${error.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка подключения</div>';
+            }
+        }
+
+        window.addEventListener('load', () => {
+            checkAuth();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,562 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фестивали</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .nav {
+            background-color: #34495e;
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-right: 1px solid #2c3e50;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background-color: #1a252f;
+        }
+
+        .content {
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .content h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .button.secondary {
+            background-color: #95a5a6;
+        }
+
+        .button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .button.danger {
+            background-color: #e74c3c;
+        }
+
+        .button.danger:hover {
+            background-color: #c0392b;
+        }
+
+        .festival-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ecf0f1;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        .festival-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+
+        .festival-header h3 {
+            margin: 0;
+            font-size: 16px;
+            color: #2c3e50;
+        }
+
+        .status-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 3px;
+            font-size: 11px;
+            font-weight: bold;
+            background-color: #d5f4e6;
+            color: #186a3b;
+        }
+
+        .festival-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .festival-info-item {
+            display: flex;
+        }
+
+        .festival-info-label {
+            font-weight: bold;
+            min-width: 80px;
+            color: #2c3e50;
+        }
+
+        .festival-actions {
+            margin-top: 10px;
+        }
+
+        .festival-actions button {
+            padding: 5px 10px;
+            font-size: 12px;
+            margin-right: 5px;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid;
+            font-size: 12px;
+        }
+
+        .message.error {
+            background-color: #fadbd8;
+            border-color: #c0392b;
+            color: #c0392b;
+        }
+
+        .message.success {
+            background-color: #d5f4e6;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 600px;
+            border-radius: 3px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-field input,
+        .form-field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 12px;
+            border-top: 1px solid #ecf0f1;
+            margin-top: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        .auth-required {
+            background-color: #d6eaf8;
+            border: 1px solid #85c1e2;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Система управления фестивалями</h1>
+            <p>Версия 1.0</p>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="container">
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="auth.html">Вход/Регистрация</a></li>
+                <li><a href="festivals.html" class="active">Фестивали</a></li>
+                <li><a href="applications.html">Заявки</a></li>
+                <li><a href="clubs.html">Клубы</a></li>
+                <li><a href="photographers.html">Фотографы</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h2>Фестивали</h2>
+
+            <div id="authMessage" class="auth-required" style="display: none;">
+                Для создания фестивалей необходимо <a href="auth.html">авторизоваться</a> как организатор
+            </div>
+
+            <div>
+                <button id="addBtn" class="button" onclick="openAddModal()" style="display: none;">+ Добавить фестиваль</button>
+            </div>
+
+            <div id="message"></div>
+
+            <div id="loading" class="loading" style="display: none;">Загрузка...</div>
+
+            <div id="festivalsList" style="display: none;"></div>
+
+            <p id="noData" style="text-align: center; color: #7f8c8d; margin-top: 20px;">Нет фестивалей</p>
+        </div>
+    </div>
+
+    <div id="festivalModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModal()">&times;</span>
+            <h2 id="modalTitle">Добавить фестиваль</h2>
+            <form id="festivalForm" onsubmit="handleSaveFestival(event)">
+                <div class="form-field">
+                    <label for="festivalName">Название:</label>
+                    <input type="text" id="festivalName" required>
+                </div>
+                <div class="form-field">
+                    <label for="festivalEpoch">Эпоха:</label>
+                    <input type="text" id="festivalEpoch" placeholder="например: Средневековье" required>
+                </div>
+                <div class="form-field">
+                    <label for="festivalDate">Дата проведения:</label>
+                    <input type="date" id="festivalDate" required>
+                </div>
+                <div class="form-field">
+                    <label for="festivalCity">Город:</label>
+                    <input type="text" id="festivalCity" required>
+                </div>
+                <div class="form-field">
+                    <label for="festivalLocation">Место проведения:</label>
+                    <input type="text" id="festivalLocation" required>
+                </div>
+                <div class="form-field">
+                    <label for="festivalRequirements">Ссылка на требования:</label>
+                    <input type="url" id="festivalRequirements" placeholder="https://...">
+                </div>
+                <button type="submit" class="button">Сохранить</button>
+                <button type="button" class="button secondary" onclick="closeModal()">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 Система управления фестивалями. Все права защищены.</p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let currentEditId = null;
+
+        function checkAuth() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                if (userData.role === 'ORGANIZER') {
+                    document.getElementById('addBtn').style.display = 'inline-block';
+                    document.getElementById('authMessage').style.display = 'none';
+                } else {
+                    document.getElementById('addBtn').style.display = 'none';
+                    document.getElementById('authMessage').style.display = 'block';
+                }
+            } else {
+                document.getElementById('addBtn').style.display = 'none';
+                document.getElementById('authMessage').style.display = 'block';
+            }
+        }
+
+        async function loadFestivals() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('noData').style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_URL}/festivals`);
+                const festivalsList = await response.json();
+                
+                if (!Array.isArray(festivalsList) || festivalsList.length === 0) {
+                    document.getElementById('festivalsList').style.display = 'none';
+                    document.getElementById('noData').style.display = 'block';
+                } else {
+                    let html = '';
+                    festivalsList.forEach(festival => {
+                        const date = new Date(festival.date).toLocaleDateString('ru-RU');
+                        
+                        let actions = '';
+                        const user = localStorage.getItem('user');
+                        if (user) {
+                            const userData = JSON.parse(user);
+                            if (userData.role === 'ORGANIZER') {
+                                actions = `
+                                    <button class="button" onclick="editFestival('${festival.id}')" style="padding: 5px 10px; font-size: 12px;">Редактировать</button>
+                                    <button class="button danger" onclick="deleteFestival('${festival.id}')" style="padding: 5px 10px; font-size: 12px;">Удалить</button>
+                                `;
+                            }
+                        }
+
+                        html += `
+                            <div class="festival-card">
+                                <div class="festival-header">
+                                    <h3>${festival.name}</h3>
+                                    <span class="status-badge">${festival.status}</span>
+                                </div>
+                                <div class="festival-info">
+                                    <div class="festival-info-item">
+                                        <span class="festival-info-label">Эпоха:</span> ${festival.epoch}
+                                    </div>
+                                    <div class="festival-info-item">
+                                        <span class="festival-info-label">Дата:</span> ${date}
+                                    </div>
+                                    <div class="festival-info-item">
+                                        <span class="festival-info-label">Город:</span> ${festival.city}
+                                    </div>
+                                    <div class="festival-info-item">
+                                        <span class="festival-info-label">Место:</span> ${festival.location}
+                                    </div>
+                                </div>
+                                ${festival.requirementsFileUrl ? `<div style="margin: 10px 0; font-size: 12px;"><a href="${festival.requirementsFileUrl}" target="_blank">📄 Требования</a></div>` : ''}
+                                <div class="festival-actions">
+                                    ${actions}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('festivalsList').innerHTML = html;
+                    document.getElementById('festivalsList').style.display = 'block';
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка загрузки данных</div>';
+                document.getElementById('festivalsList').style.display = 'none';
+                document.getElementById('noData').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function openAddModal() {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'Добавить фестиваль';
+            document.getElementById('festivalForm').reset();
+            document.getElementById('festivalModal').classList.add('active');
+        }
+
+        function closeModal() {
+            document.getElementById('festivalModal').classList.remove('active');
+            currentEditId = null;
+        }
+
+        async function editFestival(id) {
+            try {
+                const response = await fetch(`${API_URL}/festivals/${id}`);
+                const festival = await response.json();
+                
+                currentEditId = id;
+                document.getElementById('modalTitle').textContent = 'Редактировать фестиваль';
+                document.getElementById('festivalName').value = festival.name;
+                document.getElementById('festivalEpoch').value = festival.epoch;
+                document.getElementById('festivalDate').value = festival.date.split('T');
+                document.getElementById('festivalCity').value = festival.city;
+                document.getElementById('festivalLocation').value = festival.location;
+                document.getElementById('festivalRequirements').value = festival.requirementsFileUrl || '';
+                
+                document.getElementById('festivalModal').classList.add('active');
+            } catch (error) {
+                alert('Ошибка загрузки фестиваля');
+            }
+        }
+
+        async function handleSaveFestival(event) {
+            event.preventDefault();
+            
+            const data = {
+                name: document.getElementById('festivalName').value,
+                epoch: document.getElementById('festivalEpoch').value,
+                date: document.getElementById('festivalDate').value,
+                city: document.getElementById('festivalCity').value,
+                location: document.getElementById('festivalLocation').value,
+                requirementsFileUrl: document.getElementById('festivalRequirements').value
+            };
+
+            try {
+                let response;
+                if (currentEditId) {
+                    response = await fetch(`${API_URL}/festivals/${currentEditId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    response = await fetch(`${API_URL}/festivals`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-User-Id': localStorage.getItem('userId')
+                        },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                if (response.ok) {
+                    closeModal();
+                    loadFestivals();
+                    const msg = currentEditId ? 'Фестиваль обновлен' : 'Фестиваль добавлен';
+                    document.getElementById('message').innerHTML = `<div class="message success">${msg}</div>`;
+                } else {
+                    const error = await response.json();
+                    document.getElementById('message').innerHTML = `<div class="message error">${error.error || 'Ошибка сохранения'}</div>`;
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка подключения</div>';
+            }
+        }
+
+        async function deleteFestival(id) {
+            if (!confirm('Вы уверены, что хотите удалить этот фестиваль?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/festivals/${id}`, {
+                    method: 'DELETE'
+                });
+                
+                if (response.ok) {
+                    loadFestivals();
+                    document.getElementById('message').innerHTML = '<div class="message success">Фестиваль удален</div>';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('message').innerHTML = `<div class="message error">${error.error || 'Ошибка удаления'}</div>`;
+                }
+            } catch (error) {
+                console.error('Ошибка:', error);
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка подключения</div>';
+            }
+        }
+
+        window.addEventListener('load', () => {
+            checkAuth();
+            loadFestivals();
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,528 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Фотографы</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+            color: #333;
+        }
+
+        .header {
+            background-color: #2c3e50;
+            color: white;
+            padding: 20px 0;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 24px;
+            font-weight: normal;
+        }
+
+        .header p {
+            margin: 5px 0 0 0;
+            font-size: 12px;
+            opacity: 0.8;
+        }
+
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 0 15px;
+        }
+
+        .nav {
+            background-color: #34495e;
+        }
+
+        .nav ul {
+            list-style: none;
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .nav a {
+            display: block;
+            color: white;
+            text-decoration: none;
+            padding: 12px 20px;
+            border-right: 1px solid #2c3e50;
+            font-size: 13px;
+            transition: background-color 0.2s;
+        }
+
+        .nav a:hover,
+        .nav a.active {
+            background-color: #1a252f;
+        }
+
+        .content {
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border: 1px solid #ddd;
+            box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+
+        .content h2 {
+            font-size: 20px;
+            margin-bottom: 20px;
+            border-bottom: 2px solid #ecf0f1;
+            padding-bottom: 10px;
+            font-weight: normal;
+        }
+
+        .button {
+            background-color: #3498db;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            cursor: pointer;
+            font-size: 13px;
+            display: inline-block;
+            margin: 10px 10px 10px 0;
+            transition: background-color 0.2s;
+        }
+
+        .button:hover {
+            background-color: #2980b9;
+        }
+
+        .button.secondary {
+            background-color: #95a5a6;
+        }
+
+        .button.secondary:hover {
+            background-color: #7f8c8d;
+        }
+
+        .button.danger {
+            background-color: #e74c3c;
+        }
+
+        .button.danger:hover {
+            background-color: #c0392b;
+        }
+
+        .photographer-card {
+            background-color: #f9f9f9;
+            border: 1px solid #ecf0f1;
+            padding: 15px;
+            margin-bottom: 15px;
+            border-radius: 3px;
+        }
+
+        .photographer-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 10px;
+            border-bottom: 1px solid #ecf0f1;
+            padding-bottom: 10px;
+        }
+
+        .photographer-header h3 {
+            margin: 0;
+            font-size: 14px;
+            color: #2c3e50;
+        }
+
+        .photo-info {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+            margin: 10px 0;
+            font-size: 12px;
+        }
+
+        .photo-info-item {
+            display: flex;
+        }
+
+        .photo-info-label {
+            font-weight: bold;
+            min-width: 80px;
+            color: #2c3e50;
+        }
+
+        .message {
+            padding: 10px;
+            margin-bottom: 15px;
+            border: 1px solid;
+            font-size: 12px;
+        }
+
+        .message.error {
+            background-color: #fadbd8;
+            border-color: #c0392b;
+            color: #c0392b;
+        }
+
+        .message.success {
+            background-color: #d5f4e6;
+            border-color: #27ae60;
+            color: #27ae60;
+        }
+
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            overflow: auto;
+        }
+
+        .modal.active {
+            display: block;
+        }
+
+        .modal-content {
+            background-color: white;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close {
+            color: #aaa;
+            float: right;
+            font-size: 28px;
+            font-weight: bold;
+            cursor: pointer;
+        }
+
+        .close:hover {
+            color: #000;
+        }
+
+        .form-field {
+            margin-bottom: 15px;
+        }
+
+        .form-field label {
+            display: block;
+            margin-bottom: 5px;
+            font-size: 13px;
+            font-weight: bold;
+        }
+
+        .form-field input,
+        .form-field textarea {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #bdc3c7;
+            font-size: 13px;
+            font-family: Arial, sans-serif;
+        }
+
+        .form-field textarea {
+            resize: vertical;
+            min-height: 80px;
+        }
+
+        .footer {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+            font-size: 12px;
+            border-top: 1px solid #ecf0f1;
+            margin-top: 30px;
+        }
+
+        .loading {
+            text-align: center;
+            padding: 20px;
+            color: #7f8c8d;
+        }
+
+        .auth-required {
+            background-color: #d6eaf8;
+            border: 1px solid #85c1e2;
+            color: #2c3e50;
+            padding: 15px;
+            border-radius: 3px;
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class="header">
+        <div class="container">
+            <h1>Система управления фестивалями</h1>
+            <p>Версия 1.0</p>
+        </div>
+    </div>
+
+    <div class="nav">
+        <div class="container">
+            <ul>
+                <li><a href="index.html">Главная</a></li>
+                <li><a href="auth.html">Вход/Регистрация</a></li>
+                <li><a href="festivals.html">Фестивали</a></li>
+                <li><a href="applications.html">Заявки</a></li>
+                <li><a href="clubs.html">Клубы</a></li>
+                <li><a href="photographers.html" class="active">Фотографы</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <div class="container">
+        <div class="content">
+            <h2>Фотографы</h2>
+
+            <div id="authMessage" class="auth-required" style="display: none;">
+                Для добавления фотографов необходимо <a href="auth.html">авторизоваться</a> как организатор
+            </div>
+
+            <div>
+                <button id="addBtn" class="button" onclick="openAddModal()" style="display: none;">+ Добавить фотографа</button>
+            </div>
+
+            <div id="message"></div>
+
+            <div id="loading" class="loading" style="display: none;">Загрузка...</div>
+
+            <div id="photographersList" style="display: none;"></div>
+
+            <p id="noData" style="text-align: center; color: #7f8c8d; margin-top: 20px;">Нет фотографов</p>
+        </div>
+    </div>
+
+    <div id="addModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeAddModal()">&times;</span>
+            <h2 id="modalTitle">Добавить фотографа</h2>
+            <form id="photographerForm" onsubmit="handleSavePhotographer(event)">
+                <div class="form-field">
+                    <label for="photographerName">Имя:</label>
+                    <input type="text" id="photographerName" required>
+                </div>
+                <div class="form-field">
+                    <label for="photographerEmail">Email:</label>
+                    <input type="email" id="photographerEmail" required>
+                </div>
+                <div class="form-field">
+                    <label for="photographerPhone">Телефон:</label>
+                    <input type="tel" id="photographerPhone">
+                </div>
+                <div class="form-field">
+                    <label for="photographerPortfolio">Портфолио (URL):</label>
+                    <input type="url" id="photographerPortfolio">
+                </div>
+                <div class="form-field">
+                    <label for="photographerRate">Ставка (руб./час):</label>
+                    <input type="number" id="photographerRate" step="100">
+                </div>
+                <button type="submit" class="button">Сохранить</button>
+                <button type="button" class="button secondary" onclick="closeAddModal()">Отмена</button>
+            </form>
+        </div>
+    </div>
+
+    <div class="footer">
+        <p>© 2026 Система управления фестивалями. Все права защищены.</p>
+    </div>
+
+    <script>
+        const API_URL = 'http://localhost:8080/api';
+        let currentEditId = null;
+
+        function checkAuth() {
+            const user = localStorage.getItem('user');
+            if (user) {
+                const userData = JSON.parse(user);
+                if (userData.role === 'ORGANIZER') {
+                    document.getElementById('addBtn').style.display = 'inline-block';
+                    document.getElementById('authMessage').style.display = 'none';
+                } else {
+                    document.getElementById('addBtn').style.display = 'none';
+                    document.getElementById('authMessage').style.display = 'block';
+                }
+            } else {
+                document.getElementById('addBtn').style.display = 'none';
+                document.getElementById('authMessage').style.display = 'block';
+            }
+        }
+
+        async function loadPhotographers() {
+            document.getElementById('loading').style.display = 'block';
+            document.getElementById('noData').style.display = 'none';
+            
+            try {
+                const response = await fetch(`${API_URL}/photographers`);
+                const photographers = await response.json();
+                
+                if (!Array.isArray(photographers) || photographers.length === 0) {
+                    document.getElementById('photographersList').style.display = 'none';
+                    document.getElementById('noData').style.display = 'block';
+                } else {
+                    let html = '';
+                    photographers.forEach(photo => {
+                        let actions = '';
+                        const user = localStorage.getItem('user');
+                        if (user) {
+                            const userData = JSON.parse(user);
+                            if (userData.role === 'ORGANIZER') {
+                                actions = `
+                                    <button class="button" onclick="editPhotographer('${photo.id}')" style="padding: 5px 10px; font-size: 12px; margin: 0;">Редактировать</button>
+                                    <button class="button danger" onclick="deletePhotographer('${photo.id}')" style="padding: 5px 10px; font-size: 12px; margin: 0;">Удалить</button>
+                                `;
+                            }
+                        }
+
+                        html += `
+                            <div class="photographer-card">
+                                <div class="photographer-header">
+                                    <h3>${photo.name}</h3>
+                                </div>
+                                <div class="photo-info">
+                                    <div class="photo-info-item">
+                                        <span class="photo-info-label">Email:</span> ${photo.email}
+                                    </div>
+                                    <div class="photo-info-item">
+                                        <span class="photo-info-label">Телефон:</span> ${photo.phone || '-'}
+                                    </div>
+                                    ${photo.portfolioUrl ? `
+                                    <div class="photo-info-item">
+                                        <span class="photo-info-label">Портфолио:</span> <a href="${photo.portfolioUrl}" target="_blank">Посмотреть</a>
+                                    </div>
+                                    ` : ''}
+                                    ${photo.hourlyRate ? `
+                                    <div class="photo-info-item">
+                                        <span class="photo-info-label">Ставка:</span> ${photo.hourlyRate} руб/час
+                                    </div>
+                                    ` : ''}
+                                </div>
+                                <div style="margin-top: 10px;">
+                                    ${actions}
+                                </div>
+                            </div>
+                        `;
+                    });
+                    
+                    document.getElementById('photographersList').innerHTML = html;
+                    document.getElementById('photographersList').style.display = 'block';
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка загрузки данных</div>';
+                document.getElementById('photographersList').style.display = 'none';
+                document.getElementById('noData').style.display = 'block';
+            } finally {
+                document.getElementById('loading').style.display = 'none';
+            }
+        }
+
+        function openAddModal() {
+            currentEditId = null;
+            document.getElementById('modalTitle').textContent = 'Добавить фотографа';
+            document.getElementById('photographerForm').reset();
+            document.getElementById('addModal').classList.add('active');
+        }
+
+        function closeAddModal() {
+            document.getElementById('addModal').classList.remove('active');
+        }
+
+        async function editPhotographer(id) {
+            try {
+                const response = await fetch(`${API_URL}/photographers/${id}`);
+                const photo = await response.json();
+                
+                currentEditId = id;
+                document.getElementById('modalTitle').textContent = 'Редактировать фотографа';
+                document.getElementById('photographerName').value = photo.name;
+                document.getElementById('photographerEmail').value = photo.email;
+                document.getElementById('photographerPhone').value = photo.phone || '';
+                document.getElementById('photographerPortfolio').value = photo.portfolioUrl || '';
+                document.getElementById('photographerRate').value = photo.hourlyRate || '';
+                
+                document.getElementById('addModal').classList.add('active');
+            } catch (error) {
+                alert('Ошибка загрузки данных');
+            }
+        }
+
+        async function handleSavePhotographer(event) {
+            event.preventDefault();
+            
+            const data = {
+                name: document.getElementById('photographerName').value,
+                email: document.getElementById('photographerEmail').value,
+                phone: document.getElementById('photographerPhone').value,
+                portfolioUrl: document.getElementById('photographerPortfolio').value,
+                hourlyRate: parseInt(document.getElementById('photographerRate').value) || 0
+            };
+
+            try {
+                let response;
+                if (currentEditId) {
+                    response = await fetch(`${API_URL}/photographers/${currentEditId}`, {
+                        method: 'PUT',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                } else {
+                    response = await fetch(`${API_URL}/photographers`, {
+                        method: 'POST',
+                        headers: { 'Content-Type': 'application/json' },
+                        body: JSON.stringify(data)
+                    });
+                }
+
+                if (response.ok) {
+                    closeAddModal();
+                    loadPhotographers();
+                    const msg = currentEditId ? 'Фотограф обновлен' : 'Фотограф добавлен';
+                    document.getElementById('message').innerHTML = `<div class="message success">${msg}</div>`;
+                } else {
+                    const error = await response.json();
+                    document.getElementById('message').innerHTML = `<div class="message error">${error.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка подключения</div>';
+            }
+        }
+
+        async function deletePhotographer(id) {
+            if (!confirm('Вы уверены?')) return;
+            
+            try {
+                const response = await fetch(`${API_URL}/photographers/${id}`, {
+                    method: 'DELETE'
+                });
+
+                if (response.ok) {
+                    loadPhotographers();
+                    document.getElementById('message').innerHTML = '<div class="message success">Фотограф удален</div>';
+                } else {
+                    const error = await response.json();
+                    document.getElementById('message').innerHTML = `<div class="message error">${error.error}</div>`;
+                }
+            } catch (error) {
+                document.getElementById('message').innerHTML = '<div class="message error">Ошибка подключения</div>';
+            }
+        }
+
+        window.addEventListener('load', () => {
+            checkAuth();
+            loadPhotographers();
+        });
+    </script>
+</body>
+</html>
