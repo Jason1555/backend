@@ -1,7 +1,6 @@
 package com.dubinchin.mapper;
 
 import org.springframework.stereotype.Component;
-
 import com.dubinchin.dto.ClubDto;
 import com.dubinchin.dto.UpdateClubRequest;
 import com.dubinchin.entity.Club;
@@ -30,27 +29,21 @@ public class ClubMapper {
         if (request.getName() != null) {
             club.setName(request.getName());
         }
-        
         if (request.getLogo() != null) {
             club.setLogo(request.getLogo());
         }
-        
         if (request.getDescription() != null) {
             club.setDescription(request.getDescription());
         }
-        
         if (request.getPhone() != null) {
             club.setPhone(request.getPhone());
         }
-        
         if (request.getEmail() != null) {
             club.setEmail(request.getEmail());
         }
-        
         if (request.getWebsite() != null) {
             club.setWebsite(request.getWebsite());
         }
-
         if (request.getVkLink() != null) {
             club.setVkLink(request.getVkLink());
         }

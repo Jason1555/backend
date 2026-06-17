@@ -1,15 +1,19 @@
 package com.dubinchin.entity;
 
 import java.time.LocalDate;
-
 import com.dubinchin.entity.enums.FestivalStatus;
-
 import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "festival")
 @Data
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Festival {
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
@@ -28,6 +32,7 @@ public class Festival {
 
     @Column(nullable = false)
     private String location;
+    
     private String requirementsFileUrl;
     
     @Column(nullable = false)
@@ -38,9 +43,6 @@ public class Festival {
     private FestivalStatus status;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(
-        name = "organizer_id",
-        nullable = false
-    )
+    @JoinColumn(name = "organizer_id", nullable = false)
     private Organizer organizer;
 }

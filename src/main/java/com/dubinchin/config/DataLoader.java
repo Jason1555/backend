@@ -1,3 +1,4 @@
+// DataLoader.java
 package com.dubinchin.config;
 
 import com.dubinchin.entity.*;
@@ -32,160 +33,160 @@ public class DataLoader implements CommandLineRunner {
         }
 
         // ===== USERS =====
-        User organizerUser = new User();
-        organizerUser.setId("user-organizer-1");
-        organizerUser.setEmail("organizer@example.com");
-        organizerUser.setName("Иван Организатор");
-        organizerUser.setRole(UserRole.ORGANIZER);
+        User organizerUser = User.builder()
+            .email("organizer@example.com")
+            .name("Иван Организатор")
+            .role(UserRole.ORGANIZER)
+            .build();
 
-        User clubUser1 = new User();
-        clubUser1.setId("user-club-1");
-        clubUser1.setEmail("vikings@example.com");
-        clubUser1.setName("Клуб «Викинги»");
-        clubUser1.setRole(UserRole.CLUB);
+        User clubUser1 = User.builder()
+            .email("vikings@example.com")
+            .name("Клуб «Викинги»")
+            .role(UserRole.CLUB)
+            .build();
 
-        User clubUser2 = new User();
-        clubUser2.setId("user-club-2");
-        clubUser2.setEmail("medieval@example.com");
-        clubUser2.setName("Клуб «Средневековье»");
-        clubUser2.setRole(UserRole.CLUB);
+        User clubUser2 = User.builder()
+            .email("medieval@example.com")
+            .name("Клуб «Средневековье»")
+            .role(UserRole.CLUB)
+            .build();
 
         userRepository.saveAll(List.of(organizerUser, clubUser1, clubUser2));
 
         // ===== ORGANIZER =====
-        Organizer organizer = new Organizer();
-        organizer.setId("organizer-1");
-        organizer.setUser(organizerUser);
+        Organizer organizer = Organizer.builder()
+            .user(organizerUser)
+            .build();
         organizerRepository.save(organizer);
 
         // ===== CLUBS =====
-        Club vikings = new Club();
-        vikings.setId("club-1");
-        vikings.setName("Клуб исторической реконструкции «Викинги»");
-        vikings.setLogo("https://via.placeholder.com/150?text=Vikings");
-        vikings.setDescription("Реконструкция культуры и быта викингов IX–XI веков");
-        vikings.setPhone("+7 (999) 123-45-67");
-        vikings.setEmail("vikings@example.com");
-        vikings.setWebsite("https://vikings-club.ru");
-        vikings.setVkLink("https://vk.com/vikings-club");
-        vikings.setOwner(clubUser1);
+        Club vikings = Club.builder()
+            .name("Клуб исторической реконструкции «Викинги»")
+            .logo("https://via.placeholder.com/150?text=Vikings")
+            .description("Реконструкция культуры и быта викингов IX–XI веков")
+            .phone("+7 (999) 123-45-67")
+            .email("vikings@example.com")
+            .website("https://vikings-club.ru")
+            .vkLink("https://vk.com/vikings-club")
+            .owner(clubUser1)
+            .build();
 
-        Club medieval = new Club();
-        medieval.setId("club-2");
-        medieval.setName("Клуб «Средневековье»");
-        medieval.setLogo("https://via.placeholder.com/150?text=Medieval");
-        medieval.setDescription("Реконструкция средневекового быта и военного дела");
-        medieval.setPhone("+7 (999) 234-56-78");
-        medieval.setEmail("medieval@example.com");
-        medieval.setWebsite("https://medieval-club.ru");
-        medieval.setVkLink("https://vk.com/medieval-club");
-        medieval.setOwner(clubUser2);
+        Club medieval = Club.builder()
+            .name("Клуб «Средневековье»")
+            .logo("https://via.placeholder.com/150?text=Medieval")
+            .description("Реконструкция средневекового быта и военного дела")
+            .phone("+7 (999) 234-56-78")
+            .email("medieval@example.com")
+            .website("https://medieval-club.ru")
+            .vkLink("https://vk.com/medieval-club")
+            .owner(clubUser2)
+            .build();
 
         clubRepository.saveAll(List.of(vikings, medieval));
 
         // ===== FESTIVALS =====
-        Festival heroes = new Festival();
-        heroes.setId("festival-1");
-        heroes.setName("Эпоха Героев 2026");
-        heroes.setEpoch("IX–XI века");
-        heroes.setDate(LocalDate.of(2026, 6, 15));
-        heroes.setCity("Санкт-Петербург");
-        heroes.setLocation("Петропавловская крепость");
-        heroes.setRequirementsFileUrl("/requirements/viking-fest.pdf");
-        heroes.setCreatedAt(LocalDate.now());
-        heroes.setStatus(FestivalStatus.ONGOING);
-        heroes.setOrganizer(organizer);
+        Festival heroes = Festival.builder()
+            .name("Эпоха Героев 2026")
+            .epoch("IX–XI века")
+            .date(LocalDate.of(2026, 6, 15))
+            .city("Санкт-Петербург")
+            .location("Петропавловская крепость")
+            .requirementsFileUrl("/requirements/viking-fest.pdf")
+            .createdAt(LocalDate.now())
+            .status(FestivalStatus.ONGOING)
+            .organizer(organizer)
+            .build();
 
-        Festival castle = new Festival();
-        castle.setId("festival-2");
-        castle.setName("Рыцарский Замок");
-        castle.setEpoch("XIV век");
-        castle.setDate(LocalDate.of(2026, 8, 20));
-        castle.setCity("Выборг");
-        castle.setLocation("Выборгский замок");
-        castle.setRequirementsFileUrl("/requirements/medieval.pdf");
-        castle.setCreatedAt(LocalDate.now());
-        castle.setStatus(FestivalStatus.PLANNED);
-        castle.setOrganizer(organizer);
+        Festival castle = Festival.builder()
+            .name("Рыцарский Замок")
+            .epoch("XIV век")
+            .date(LocalDate.of(2026, 8, 20))
+            .city("Выборг")
+            .location("Выборгский замок")
+            .requirementsFileUrl("/requirements/medieval.pdf")
+            .createdAt(LocalDate.now())
+            .status(FestivalStatus.PLANNED)
+            .organizer(organizer)
+            .build();
 
-        Festival battle = new Festival();
-        battle.setId("festival-3");
-        battle.setName("Ледовое Побоище");
-        battle.setEpoch("XIII век");
-        battle.setDate(LocalDate.of(2025, 4, 10));
-        battle.setCity("Псков");
-        battle.setLocation("Изборская крепость");
-        battle.setRequirementsFileUrl("/requirements/ice-battle.pdf");
-        battle.setCreatedAt(LocalDate.now());
-        battle.setStatus(FestivalStatus.COMPLETED);
-        battle.setOrganizer(organizer);
+        Festival battle = Festival.builder()
+            .name("Ледовое Побоище")
+            .epoch("XIII век")
+            .date(LocalDate.of(2025, 4, 10))
+            .city("Псков")
+            .location("Изборская крепость")
+            .requirementsFileUrl("/requirements/ice-battle.pdf")
+            .createdAt(LocalDate.now())
+            .status(FestivalStatus.COMPLETED)
+            .organizer(organizer)
+            .build();
 
         festivalRepository.saveAll(List.of(heroes, castle, battle));
 
         // ===== APPLICATIONS =====
-        Application app1 = new Application();
-        app1.setId("application-1");
-        app1.setFestival(heroes);
-        app1.setClub(vikings);
-        app1.setStatus(ApplicationStatus.APPROVED);
-        app1.setDescription("Готовы участвовать с полной реконструкцией лагеря.");
-        app1.setSubmittedAt(LocalDateTime.now().minusDays(30));
-        app1.setReviewedAt(LocalDateTime.now().minusDays(25));
-        app1.setReviewerNotes("Отличная подготовка.");
+        Application app1 = Application.builder()
+            .festival(heroes)
+            .club(vikings)
+            .status(ApplicationStatus.APPROVED)
+            .description("Готовы участвовать с полной реконструкцией лагеря.")
+            .submittedAt(LocalDateTime.now().minusDays(30))
+            .reviewedAt(LocalDateTime.now().minusDays(25))
+            .reviewerNotes("Отличная подготовка.")
+            .build();
 
-        Application app2 = new Application();
-        app2.setId("application-2");
-        app2.setFestival(heroes);
-        app2.setClub(medieval);
-        app2.setStatus(ApplicationStatus.PENDING);
-        app2.setDescription("Планируем провести показательные бои.");
-        app2.setSubmittedAt(LocalDateTime.now().minusDays(10));
+        Application app2 = Application.builder()
+            .festival(heroes)
+            .club(medieval)
+            .status(ApplicationStatus.PENDING)
+            .description("Планируем провести показательные бои.")
+            .submittedAt(LocalDateTime.now().minusDays(10))
+            .build();
 
-        Application app3 = new Application();
-        app3.setId("application-3");
-        app3.setFestival(castle);
-        app3.setClub(medieval);
-        app3.setStatus(ApplicationStatus.REJECTED);
-        app3.setDescription("Заявка на участие в турнире.");
-        app3.setSubmittedAt(LocalDateTime.now().minusDays(20));
-        app3.setReviewedAt(LocalDateTime.now().minusDays(18));
-        app3.setReviewerNotes("Не соответствует требованиям по экипировке.");
+        Application app3 = Application.builder()
+            .festival(castle)
+            .club(medieval)
+            .status(ApplicationStatus.REJECTED)
+            .description("Заявка на участие в турнире.")
+            .submittedAt(LocalDateTime.now().minusDays(20))
+            .reviewedAt(LocalDateTime.now().minusDays(18))
+            .reviewerNotes("Не соответствует требованиям по экипировке.")
+            .build();
 
         applicationRepository.saveAll(List.of(app1, app2, app3));
 
         // ===== PHOTOGRAPHERS =====
-        Photographer photographer1 = new Photographer();
-        photographer1.setId("photographer-1");
-        photographer1.setName("Алексей Иванов");
-        photographer1.setContactInfo("@alex_photo");
-        photographer1.setPortfolioUrl("https://portfolio.example/alex");
+        Photographer photographer1 = Photographer.builder()
+            .name("Алексей Иванов")
+            .contactInfo("@alex_photo")
+            .portfolioUrl("https://portfolio.example/alex")
+            .build();
 
-        Photographer photographer2 = new Photographer();
-        photographer2.setId("photographer-2");
-        photographer2.setName("Мария Смирнова");
-        photographer2.setContactInfo("@maria_photo");
-        photographer2.setPortfolioUrl("https://portfolio.example/maria");
+        Photographer photographer2 = Photographer.builder()
+            .name("Мария Смирнова")
+            .contactInfo("@maria_photo")
+            .portfolioUrl("https://portfolio.example/maria")
+            .build();
 
-        Photographer photographer3 = new Photographer();
-        photographer3.setId("photographer-3");
-        photographer3.setName("Дмитрий Петров");
-        photographer3.setContactInfo("@dmitry_photo");
-        photographer3.setPortfolioUrl("https://portfolio.example/dmitry");
+        Photographer photographer3 = Photographer.builder()
+            .name("Дмитрий Петров")
+            .contactInfo("@dmitry_photo")
+            .portfolioUrl("https://portfolio.example/dmitry")
+            .build();
 
         photographerRepository.saveAll(List.of(photographer1, photographer2, photographer3));
 
         // ===== FESTIVAL_PHOTOGRAPHERS =====
-        FestivalPhotographer fp1 = new FestivalPhotographer();
-        fp1.setId("festival-photographer-1");
-        fp1.setFestival(heroes);
-        fp1.setPhotographer(photographer1);
-        fp1.setStatus(PhotographerStatus.HIRED);
+        FestivalPhotographer fp1 = FestivalPhotographer.builder()
+            .festival(heroes)
+            .photographer(photographer1)
+            .status(PhotographerStatus.HIRED)
+            .build();
 
-        FestivalPhotographer fp2 = new FestivalPhotographer();
-        fp2.setId("festival-photographer-2");
-        fp2.setFestival(castle);
-        fp2.setPhotographer(photographer2);
-        fp2.setStatus(PhotographerStatus.NEGOTIATING);
+        FestivalPhotographer fp2 = FestivalPhotographer.builder()
+            .festival(castle)
+            .photographer(photographer2)
+            .status(PhotographerStatus.NEGOTIATING)
+            .build();
 
         festivalPhotographerRepository.saveAll(List.of(fp1, fp2));
     }

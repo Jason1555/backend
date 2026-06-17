@@ -1,7 +1,6 @@
 package com.dubinchin.mapper;
 
 import org.springframework.stereotype.Component;
-
 import com.dubinchin.dto.ApplicationDocumentDto;
 import com.dubinchin.entity.ApplicationDocument;
 

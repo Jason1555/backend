@@ -1,7 +1,6 @@
 package com.dubinchin.mapper;
 
 import org.springframework.stereotype.Component;
-
 import com.dubinchin.dto.UserDto;
 import com.dubinchin.entity.User;
 
@@ -16,7 +15,7 @@ public class UserMapper {
             .id(user.getId())
             .email(user.getEmail())
             .name(user.getName())
-            .role(user.getName())
+            .role(user.getRole().toString())
             .build();
     }
 }

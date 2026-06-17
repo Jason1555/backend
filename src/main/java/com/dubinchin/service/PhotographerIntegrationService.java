@@ -1,18 +1,19 @@
 package com.dubinchin.service;
 
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.dubinchin.dto.PhotographerDto;
 import com.dubinchin.entity.Festival;
 import com.dubinchin.entity.FestivalPhotographer;
 import com.dubinchin.entity.Photographer;
 import com.dubinchin.entity.enums.PhotographerStatus;
 import com.dubinchin.exception.ResourceNotFoundException;
+import com.dubinchin.exception.ValidationException;
+import com.dubinchin.mapper.PhotographerMapper;
 import com.dubinchin.repository.FestivalPhotographerRepository;
 import com.dubinchin.repository.FestivalRepository;
 import com.dubinchin.repository.PhotographerRepository;
+import lombok.RequiredArgsConstructor;
 
 import java.util.List;
 
@@ -20,39 +21,47 @@ import java.util.List;
 @RequiredArgsConstructor
 @Transactional
 public class PhotographerIntegrationService {
-
     private final FestivalRepository festivalRepository;
     private final PhotographerRepository photographerRepository;
     private final FestivalPhotographerRepository festivalPhotographerRepository;
+    private final PhotographerMapper photographerMapper;
 
     @Transactional(readOnly = true)
     public List<PhotographerDto> getFestivalPhotographers(String festivalId) {
-        return festivalPhotographerRepository
-                .findByFestivalId(festivalId)
-                .stream()
-                .map(FestivalPhotographer::getPhotographer)
-                .map(this::toDto)
-                .toList();
+        if (!festivalRepository.existsById(festivalId)) {
+            throw new ResourceNotFoundException("Festival not found with ID: " + festivalId);
+        }
+
+        List<PhotographerDto> photographers = festivalPhotographerRepository
+            .findByFestivalId(festivalId)
+            .stream()
+            .map(fp -> photographerMapper.toDto(fp.getPhotographer()))
+            .toList();
+
+        return photographers;
     }
 
     public void hirePhotographer(String festivalId, String photographerId) {
         Festival festival = festivalRepository.findById(festivalId)
-                .orElseThrow(() -> new ResourceNotFoundException("Festival not found"));
-        Photographer photographer = photographerRepository.findById(photographerId)
-                .orElseThrow(() -> new ResourceNotFoundException("Photographer not found"));
-        FestivalPhotographer relation = new FestivalPhotographer();
-        relation.setFestival(festival);
-        relation.setPhotographer(photographer);
-        relation.setStatus(PhotographerStatus.HIRED);
-        festivalPhotographerRepository.save(relation);
-    }
+            .orElseThrow(() -> new ResourceNotFoundException("Festival not found with ID: " + festivalId));
 
-    private PhotographerDto toDto(Photographer photographer) {
-        return PhotographerDto.builder()
-                .id(photographer.getId())
-                .name(photographer.getName())
-                .contactInfo(photographer.getContactInfo())
-                .portfolioUrl(photographer.getPortfolioUrl())
-                .build();
+        Photographer photographer = photographerRepository.findById(photographerId)
+            .orElseThrow(() -> new ResourceNotFoundException("Photographer not found with ID: " + photographerId));
+
+        boolean alreadyHired = festivalPhotographerRepository.findByFestivalId(festivalId)
+            .stream()
+            .anyMatch(fp -> fp.getPhotographer().getId().equals(photographerId));
+
+        if (alreadyHired) {
+            throw new ValidationException("Photographer already hired for this festival");
+        }
+
+        FestivalPhotographer relation = FestivalPhotographer.builder()
+            .festival(festival)
+            .photographer(photographer)
+            .status(PhotographerStatus.HIRED)
+            .build();
+
+        festivalPhotographerRepository.save(relation);
     }
 }

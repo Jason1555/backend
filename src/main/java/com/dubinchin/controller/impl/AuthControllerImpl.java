@@ -1,14 +1,12 @@
 package com.dubinchin.controller.impl;
 
 import org.springframework.web.bind.annotation.RestController;
-
+import lombok.RequiredArgsConstructor;
 import com.dubinchin.controller.AuthController;
 import com.dubinchin.dto.LoginRequest;
 import com.dubinchin.dto.LoginResponse;
 import com.dubinchin.dto.RegisterRequest;
 import com.dubinchin.service.AuthService;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor

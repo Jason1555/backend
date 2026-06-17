@@ -2,7 +2,6 @@ package com.dubinchin.service;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
-
 import com.dubinchin.dto.ApplicationDto;
 import com.dubinchin.dto.CreateApplicationRequest;
 import com.dubinchin.dto.UpdateApplicationStatusRequest;
@@ -21,7 +20,6 @@ import com.dubinchin.repository.ApplicationRepository;
 import com.dubinchin.repository.ClubRepository;
 import com.dubinchin.repository.FestivalRepository;
 import com.dubinchin.repository.UserRepository;
-
 import lombok.RequiredArgsConstructor;
 
 import java.time.LocalDateTime;
@@ -38,33 +36,19 @@ public class ApplicationService {
     private final ApplicationMapper applicationMapper;
 
     @Transactional(readOnly = true)
-    public List<ApplicationDto> getApplications(
-            String festivalId,
-            String clubId,
-            ApplicationStatus status
-    ) {
+    public List<ApplicationDto> getApplications(String festivalId, String clubId, ApplicationStatus status) {
+        List<Application> applications;
         if (festivalId != null) {
-            return applicationRepository.findByFestivalId(festivalId)
-                    .stream()
-                    .map(applicationMapper::toDto)
-                    .toList();
+            applications = applicationRepository.findByFestivalId(festivalId);
+        } else if (clubId != null) {
+            applications = applicationRepository.findByClubId(clubId);
+        } else if (status != null) {
+            applications = applicationRepository.findByStatus(status);
+        } else {
+            applications = applicationRepository.findAll();
         }
-        if (clubId != null) {
-            return applicationRepository.findByClubId(clubId)
-                    .stream()
-                    .map(applicationMapper::toDto)
-                    .toList();
-        }
-        if (status != null) {
-            return applicationRepository.findByStatus(status)
-                    .stream()
-                    .map(applicationMapper::toDto)
-                    .toList();
-        }
-        return applicationRepository.findAll()
-                .stream()
-                .map(applicationMapper::toDto)
-                .toList();
+
+        return applications.stream().map(applicationMapper::toDto).toList();
     }
 
     @Transactional(readOnly = true)
@@ -73,83 +57,57 @@ public class ApplicationService {
         return applicationMapper.toDto(application);
     }
 
-    public ApplicationDto createApplication(
-            String userId,
-            CreateApplicationRequest request
-    ) {
+    public ApplicationDto createApplication(String userId, CreateApplicationRequest request) {
         User user = userRepository.findById(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "User with ID: " + userId + " not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("User with ID: " + userId + " not found"));
+
         if (user.getRole() != UserRole.CLUB) {
-            throw new UnauthorizedAccessException(
-                    "Only users with CLUB role can submit applications. User ID: " + userId);
+            throw new UnauthorizedAccessException("Only users with CLUB role can submit applications. User ID: " + userId);
         }
+
         Club club = clubRepository.findByUserId(userId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Club for user ID: " + userId + " not found"));
-        Festival festival = festivalRepository
-                .findById(request.getFestivalId())
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Festival with ID: " + request.getFestivalId() + " not found"));
-        if (festival.getStatus() != FestivalStatus.PLANNED) {
-            throw new ValidationException(
-                    "Applications for festival with ID " + festival.getId() + " are closed. Current status: " + festival.getStatus());
+            .orElseThrow(() -> new ResourceNotFoundException("Club for user ID: " + userId + " not found"));
+
+        Festival festival = festivalRepository.findById(request.getFestivalId())
+            .orElseThrow(() -> new ResourceNotFoundException("Festival with ID: " + request.getFestivalId() + " not found"));
+
+        if (festival.getStatus() == FestivalStatus.COMPLETED || festival.getStatus() == FestivalStatus.CANCELLED) {
+            throw new ValidationException("Applications for festival with ID " + festival.getId() + " are closed. Current status: " + festival.getStatus());
         }
-        boolean alreadyExists =
-                applicationRepository.existsByFestivalIdAndClubId(
-                        festival.getId(),
-                        club.getId()
-                );
-        if (alreadyExists) {
-            throw new ValidationException(
-                    "Application already submitted for festival ID " + festival.getId() + " and club ID " + club.getId());
+
+        if (applicationRepository.existsByFestivalIdAndClubId(festival.getId(), club.getId())) {
+            throw new ValidationException("Application already submitted for festival ID " + festival.getId() + " and club ID " + club.getId());
         }
-        Application application = new Application();
-        application.setFestival(festival);
-        application.setClub(club);
-        application.setStatus(ApplicationStatus.PENDING);
-        application.setDescription(
-                request.getDescription()
-        );
-        application.setSubmittedAt(
-                LocalDateTime.now()
-        );
-        Application saved =
-                applicationRepository.save(application);
+
+        Application application = Application.builder()
+            .festival(festival)
+            .club(club)
+            .status(ApplicationStatus.PENDING)
+            .description(request.getDescription())
+            .submittedAt(LocalDateTime.now())
+            .build();
+
+        Application saved = applicationRepository.save(application);
         return applicationMapper.toDto(saved);
     }
 
-    public ApplicationDto updateStatus(
-            String applicationId,
-            UpdateApplicationStatusRequest request
-    ) {
-        Application application =
-                getApplicationOrThrow(applicationId);
+    public ApplicationDto updateStatus(String applicationId, UpdateApplicationStatusRequest request) {
+        Application application = getApplicationOrThrow(applicationId);
+
         if (application.getStatus() != ApplicationStatus.PENDING) {
-            throw new ValidationException(
-                    "Application with ID " + applicationId + " has already been reviewed. Current status: " + application.getStatus());
+            throw new ValidationException("Application with ID " + applicationId + " has already been reviewed. Current status: " + application.getStatus());
         }
+
         application.setStatus(ApplicationStatus.valueOf(request.getStatus()));
-        application.setReviewerNotes(
-                request.getReviewerNotes()
-        );
-        application.setReviewedAt(
-                LocalDateTime.now()
-        );
-        Application saved =
-                applicationRepository.save(application);
+        application.setReviewerNotes(request.getReviewerNotes());
+        application.setReviewedAt(LocalDateTime.now());
+
+        Application saved = applicationRepository.save(application);
         return applicationMapper.toDto(saved);
     }
 
-    private Application getApplicationOrThrow(
-            String applicationId
-    ) {
+    private Application getApplicationOrThrow(String applicationId) {
         return applicationRepository.findById(applicationId)
-                .orElseThrow(() ->
-                        new ResourceNotFoundException(
-                                "Application with ID: " + applicationId + " not found"));
+            .orElseThrow(() -> new ResourceNotFoundException("Application with ID: " + applicationId + " not found"));
     }
 }

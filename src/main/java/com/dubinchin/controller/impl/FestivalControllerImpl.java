@@ -1,9 +1,10 @@
 package com.dubinchin.controller.impl;
 
 import java.util.List;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import lombok.RequiredArgsConstructor;
 import com.dubinchin.controller.FestivalController;
 import com.dubinchin.dto.CreateFestivalRequest;
 import com.dubinchin.dto.FestivalDto;
@@ -11,15 +12,13 @@ import com.dubinchin.dto.UpdateFestivalRequest;
 import com.dubinchin.entity.enums.FestivalStatus;
 import com.dubinchin.service.FestivalService;
 
-import lombok.RequiredArgsConstructor;
-
 @RestController
 @RequiredArgsConstructor
-public class FestivalControllerImpl implements FestivalController{
+public class FestivalControllerImpl implements FestivalController {
     private final FestivalService festivalService;
 
     @Override
-    public List<FestivalDto> getFestivals(String epoch,FestivalStatus status) {
+    public List<FestivalDto> getFestivals(String epoch, FestivalStatus status) {
         return festivalService.getFestivals(epoch, status);
     }
 
@@ -29,6 +28,7 @@ public class FestivalControllerImpl implements FestivalController{
     }
 
     @Override
+    @ResponseStatus(HttpStatus.CREATED)
     public FestivalDto createFestival(String userId, CreateFestivalRequest request) {
         return festivalService.createFestival(userId, request);
     }
@@ -39,6 +39,7 @@ public class FestivalControllerImpl implements FestivalController{
     }
 
     @Override
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteFestival(String id) {
         festivalService.deleteFestival(id);
     }

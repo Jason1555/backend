@@ -1,17 +1,16 @@
 package com.dubinchin.controller.impl;
 
 import java.util.List;
-
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
-
+import lombok.RequiredArgsConstructor;
 import com.dubinchin.controller.ApplicationController;
 import com.dubinchin.dto.ApplicationDto;
 import com.dubinchin.dto.CreateApplicationRequest;
 import com.dubinchin.dto.UpdateApplicationStatusRequest;
 import com.dubinchin.entity.enums.ApplicationStatus;
 import com.dubinchin.service.ApplicationService;
-
-import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
@@ -29,6 +28,7 @@ public class ApplicationControllerImpl implements ApplicationController {
     }
 
     @Override
+    @ResponseStatus(HttpStatus.CREATED)
     public ApplicationDto createApplication(String userId, CreateApplicationRequest request) {
         return applicationService.createApplication(userId, request);
     }
