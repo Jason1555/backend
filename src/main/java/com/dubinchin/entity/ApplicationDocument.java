@@ -13,6 +13,7 @@ import lombok.Data;
 public class ApplicationDocument {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(nullable = false)

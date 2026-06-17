@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class Club {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(nullable = false)

@@ -41,7 +41,7 @@ public class GlobalExceptionHandler {
             );
     }
 
-    @ExceptionHandler(Exception.class)
+    /*@ExceptionHandler(Exception.class)
     public ResponseEntity<ErrorResponse> handleUnexpected(Exception e) {
         return ResponseEntity.status(HttpStatus.INTERNAL_SERVER_ERROR)
             .body(
@@ -50,5 +50,5 @@ public class GlobalExceptionHandler {
                     .timestamp(LocalDateTime.now())
                     .build()
             );
-    }
+    }*/
 }

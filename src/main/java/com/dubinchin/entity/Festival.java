@@ -12,6 +12,7 @@ import lombok.Data;
 @Data
 public class Festival {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Column(nullable = false)

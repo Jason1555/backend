@@ -8,6 +8,7 @@ import lombok.Data;
 @Data
 public class Organizer {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
     
     @OneToOne(fetch = FetchType.LAZY)

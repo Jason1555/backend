@@ -14,6 +14,7 @@ import lombok.Data;
 @Data
 public class Application {
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Enumerated(EnumType.STRING)

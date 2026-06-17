@@ -11,6 +11,7 @@ import lombok.Data;
 public class FestivalPhotographer {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.UUID)
     private String id;
 
     @Enumerated(EnumType.STRING)
