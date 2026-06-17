@@ -7,5 +7,5 @@ import com.dubinchin.entity.Organizer;
 
 public interface OrganizerRepository extends JpaRepository<Organizer, String> {
     Optional<Organizer> findByUserId(String userId);
-    boolean exexistsByUserId(String userId);
+    boolean existsByUserId(String userId);
 }

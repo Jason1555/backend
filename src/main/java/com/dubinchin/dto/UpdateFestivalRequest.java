@@ -7,6 +7,7 @@ public class UpdateFestivalRequest {
     private String name;
     private String epoch;
     private String date;
+    private String city;
     private String location;
     private String requirementsFileUrl;
     private String status;

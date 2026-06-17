@@ -13,6 +13,9 @@ public class CreateFestivalRequest {
 
     @NotBlank
     private String date;
+
+    @NotBlank
+    private String city;
     
     @NotBlank
     private String location;

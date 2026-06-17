@@ -62,13 +62,14 @@ public class FestivalService {
                 if (user.getRole() != UserRole.ORGANIZER) {
             throw new UnauthorizedAccessException("Only users with ORGANIZER role can create festivals. User ID: " + userId);
         }
-                Organizer organizer = organizerRepository
-                .findByUserId(userId)
-                .orElseThrow(() -> new ResourceNotFoundException("Organizer with ID: " + userId + " not found"));
+        Organizer organizer = organizerRepository
+            .findByUserId(userId)
+            .orElseThrow(() -> new ResourceNotFoundException("Organizer with ID: " + userId + " not found"));
         Festival festival = new Festival();
         festival.setName(request.getName());
         festival.setEpoch(request.getEpoch());
         festival.setDate(LocalDate.parse(request.getDate()));
+        festival.setCity(request.getCity());
         festival.setLocation(request.getLocation());
         festival.setRequirementsFileUrl(request.getRequirementsFileUrl());
         festival.setOrganizer(organizer);
@@ -86,7 +87,10 @@ public class FestivalService {
             festival.setEpoch(request.getEpoch());
         }
         if (request.getDate() != null) {
-            festival.setDate(LocalDate.parse(request.getDate()));
+            festival.setDate(LocalDate.parse(request.getDate()));  
+        }
+        if (request.getCity() != null) {
+            festival.setCity(request.getCity());
         }
         if (request.getLocation() != null) {
             festival.setLocation(request.getLocation());

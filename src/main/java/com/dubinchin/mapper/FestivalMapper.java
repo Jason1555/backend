@@ -22,6 +22,7 @@ public class FestivalMapper {
             .name(festival.getName())
             .epoch(festival.getEpoch())
             .date(festival.getDate().toString())
+            .city(festival.getCity())
             .location(festival.getLocation())
             .requirementsFileUrl(festival.getRequirementsFileUrl())
             .organizerId(festival.getOrganizer().getId())
@@ -35,6 +36,7 @@ public class FestivalMapper {
         festival.setName(request.getName());
         festival.setEpoch(request.getEpoch());
         festival.setDate(LocalDate.parse(request.getDate()));
+        festival.setCity(request.getCity());
         festival.setLocation(request.getLocation());
         festival.setRequirementsFileUrl(request.getRequirementsFileUrl());
         return festival;

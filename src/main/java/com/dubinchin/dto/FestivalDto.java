@@ -11,6 +11,7 @@ public class FestivalDto {
     private String name;
     private String epoch;
     private String date;
+    private String city;
     private String location;
     private String requirementsFileUrl;
     private String organizerId;

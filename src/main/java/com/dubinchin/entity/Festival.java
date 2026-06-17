@@ -23,6 +23,8 @@ public class Festival {
     @Column(nullable = false)
     private LocalDate date;
 
+    private String city;
+
     @Column(nullable = false)
     private String location;
     private String requirementsFileUrl;
