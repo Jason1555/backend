@@ -113,6 +113,13 @@ public class FestivalService {
                 .orElseThrow(() -> new ResourceNotFoundException("Festival with ID: " + festivalId + " not found"));
     }
 
+    public void deleteFestival(String festivalId) {
+        Festival festival = getFestivalOrThrow(festivalId);
+        if (festival.getStatus() != FestivalStatus.CANCELLED || festival.getStatus() != FestivalStatus.COMPLETED) {
+            festivalRepository.delete(festival);
+        }
+    }
+
     private void validateStatusTransition(FestivalStatus current, FestivalStatus target) {
         switch (current) {
             case PLANNED -> {

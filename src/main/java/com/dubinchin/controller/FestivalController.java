@@ -2,6 +2,7 @@ package com.dubinchin.controller;
 
 import java.util.List;
 
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +21,9 @@ import io.swagger.v3.oas.annotations.parameters.RequestBody;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.validation.Valid;
 
-@RequestMapping("api/festifals")
-@Tag(name = "Festifals") 
-public interface FestifalController {
+@RequestMapping("/api/festivals")
+@Tag(name = "Festivals") 
+public interface FestivalController {
     @Operation(summary = "Get all festivals")
     @GetMapping
     List<FestivalDto> getFestivals(
@@ -61,4 +62,8 @@ public interface FestifalController {
             @RequestBody @Valid
             UpdateFestivalRequest request
     );
+
+    @Operation(summary = "Delete a festival")
+    @DeleteMapping("/{id}")
+    void deleteFestival(@PathVariable String id);
 }

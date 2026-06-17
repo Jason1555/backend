@@ -4,7 +4,7 @@ import java.util.List;
 
 import org.springframework.web.bind.annotation.RestController;
 
-import com.dubinchin.controller.FestifalController;
+import com.dubinchin.controller.FestivalController;
 import com.dubinchin.dto.CreateFestivalRequest;
 import com.dubinchin.dto.FestivalDto;
 import com.dubinchin.dto.UpdateFestivalRequest;
@@ -15,7 +15,7 @@ import lombok.RequiredArgsConstructor;
 
 @RestController
 @RequiredArgsConstructor
-public class FestivalControllerImpl implements FestifalController{
+public class FestivalControllerImpl implements FestivalController{
     private final FestivalService festivalService;
 
     @Override
@@ -36,5 +36,10 @@ public class FestivalControllerImpl implements FestifalController{
     @Override
     public FestivalDto updateFestival(String id, UpdateFestivalRequest request) {
         return festivalService.updateFestival(id, request);
+    }
+
+    @Override
+    public void deleteFestival(String id) {
+        festivalService.deleteFestival(id);
     }
 }
